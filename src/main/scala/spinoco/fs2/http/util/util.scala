@@ -40,7 +40,7 @@ package object util {
               out(pos) = alphabet.toChar(idx).toByte
               pos = pos + 1
             }
-            Pull.output(ByteVectorChunk(ByteVector.view(out))) >> go(n.takeRight(pad))(tl)
+            Pull.output(ByteVectorChunk(ByteVector.view(out))) *> go(n.takeRight(pad))(tl)
           } else {
             go(n)(tl)
           }
@@ -93,7 +93,7 @@ package object util {
             else {
               val (out, rem) = acc.splitAt(aligned)
               if (term) Pull.output(ByteVectorChunk(out.toByteVector))
-              else Pull.output(ByteVectorChunk(out.toByteVector)) >> go(rem)(tl)
+              else Pull.output(ByteVectorChunk(out.toByteVector)) *> go(rem)(tl)
             }
 
           } catch {

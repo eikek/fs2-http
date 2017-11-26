@@ -317,7 +317,7 @@ object WebSocket {
                     }
                   }
                   // pulls nonempty
-                  pulls.reduce(_ >> _) >> go(dataTail)(tl)
+                  pulls.reduce(_ *> _) *> go(dataTail)(tl)
               }
           }
         }
@@ -351,10 +351,10 @@ object WebSocket {
           case Some((frame, tl)) =>
             frame.opcode match {
               case OpCode.Continuation => go(buff :+ frame)(tl)
-              case OpCode.Text => decode(buff :+ frame).flatMap { decoded => Pull.output1(Frame.Text(decoded)) >> go(Vector.empty)(tl) }
-              case OpCode.Binary =>  decode(buff :+ frame).flatMap { decoded => Pull.output1(Frame.Binary(decoded)) >> go(Vector.empty)(tl) }
-              case OpCode.Ping => Pull.eval(pongQ.enqueue1(PingPong.Ping)) >> go(buff)(tl)
-              case OpCode.Pong => Pull.eval(pongQ.enqueue1(PingPong.Pong)) >> go(buff)(tl)
+              case OpCode.Text => decode(buff :+ frame).flatMap { decoded => Pull.output1(Frame.Text(decoded)) *> go(Vector.empty)(tl) }
+              case OpCode.Binary =>  decode(buff :+ frame).flatMap { decoded => Pull.output1(Frame.Binary(decoded)) *> go(Vector.empty)(tl) }
+              case OpCode.Ping => Pull.eval(pongQ.enqueue1(PingPong.Ping)) *> go(buff)(tl)
+              case OpCode.Pong => Pull.eval(pongQ.enqueue1(PingPong.Pong)) *> go(buff)(tl)
               case OpCode.Close => Pull.done
             }
         }

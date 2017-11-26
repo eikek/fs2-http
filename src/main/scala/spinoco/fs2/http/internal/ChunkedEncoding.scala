@@ -39,11 +39,11 @@ object ChunkedEncoding {
               }
 
             case Right(remains) =>
-              if (remains == bv.size) Pull.output(ByteVectorChunk(bv)) >> go(Left(ByteVector.empty), tl)
-              else if (remains > bv.size) Pull.output(ByteVectorChunk(bv)) >> go(Right(remains - bv.size), tl)
+              if (remains == bv.size) Pull.output(ByteVectorChunk(bv)) *> go(Left(ByteVector.empty), tl)
+              else if (remains > bv.size) Pull.output(ByteVectorChunk(bv)) *> go(Right(remains - bv.size), tl)
               else {
                 val (out,next) = bv.splitAt(remains.toInt)
-                Pull.output(ByteVectorChunk(out)) >> go(Left(ByteVector.empty), Stream.chunk(ByteVectorChunk(next)) ++ tl)
+                Pull.output(ByteVectorChunk(out)) *> go(Left(ByteVector.empty), Stream.chunk(ByteVectorChunk(next)) ++ tl)
               }
           }
 
