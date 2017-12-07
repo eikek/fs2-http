@@ -19,7 +19,7 @@ sealed trait Matcher[+F[_], +A] { self =>
     Bind[F, A, B](self, r => Matcher.ofResult(r.map(f)) )
 
   /** defined ad map { _ => b} **/
-  def *>[B](b: B): Matcher[F, B] =
+  def >>[B](b: B): Matcher[F, B] =
     self.map { _ => b }
 
   /** advances path by one segment, after this matches **/

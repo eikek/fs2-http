@@ -30,11 +30,11 @@ object HttpServerSpec extends Properties("HttpServer"){
   }
 
   def failRouteService(request: HttpRequestHeader, body: Stream[IO,Byte]): Stream[IO,HttpResponse[IO]] = {
-    Stream.fail(new Throwable("Booom!"))
+    Stream.raiseError(new Throwable("Booom!"))
   }
 
   def failingResponse(request: HttpRequestHeader, body: Stream[IO,Byte]): Stream[IO,HttpResponse[IO]] = Stream {
-    HttpResponse(HttpStatusCode.Ok).copy(body = Stream.fail(new Throwable("Kaboom!")).covary[IO])
+    HttpResponse(HttpStatusCode.Ok).copy(body = Stream.raiseError(new Throwable("Kaboom!")).covary[IO])
   }.covary[IO]
 
 

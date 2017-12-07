@@ -57,7 +57,7 @@ object StreamBodyEncoder {
   def fromBodyEncoder[F[_], A](implicit E: BodyEncoder[A]):StreamBodyEncoder[F, A] =
     StreamBodyEncoder(E.contentType) { _.flatMap { a =>
       E.encode(a) match {
-        case Failure(err) => Stream.fail(new Throwable(s"Failed to encode: $err ($a)"))
+        case Failure(err) => Stream.raiseError(new Throwable(s"Failed to encode: $err ($a)"))
         case Successful(bytes) => Stream.chunk(ByteVectorChunk(bytes))
       }
     }}
